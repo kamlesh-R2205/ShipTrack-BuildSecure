@@ -1,4 +1,7 @@
-const API_BASE = '/api';
+// Determine API Base URL:
+// 1. If VITE_API_URL is provided in environment variables, use it.
+// 2. Otherwise default to relative '/api' (handled by Vite proxy in dev, or same-origin in production).
+const API_BASE = import.meta.env?.VITE_API_URL || '/api';
 
 function getAuthHeader() {
   const token = localStorage.getItem('shiptrack_token');
@@ -21,11 +24,38 @@ async function request(endpoint, options = {}) {
     config.body = JSON.stringify(options.body);
   }
 
-  const response = await fetch(`${API_BASE}${endpoint}`, config);
-  const data = await response.json().catch(() => ({}));
+  let response;
+  try {
+    response = await fetch(`${API_BASE}${endpoint}`, config);
+  } catch (netErr) {
+    // Resilient fallback for local development if Vite proxy is bypassed or inactive
+    const isLocalhost =
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+    if (API_BASE === '/api' && isLocalhost) {
+      try {
+        console.warn(`[API] Relative '${API_BASE}' unreachable. Retrying direct fallback 'http://localhost:5000/api${endpoint}'...`);
+        response = await fetch(`http://localhost:5000/api${endpoint}`, config);
+      } catch (fallbackErr) {
+        throw new Error(
+          'Network request failed: Could not connect to backend server at http://localhost:5000. Ensure the server is started with npm start.'
+        );
+      }
+    } else {
+      throw new Error(`Network request failed: ${netErr.message}`);
+    }
+  }
+
+  let data;
+  try {
+    data = await response.json();
+  } catch (jsonErr) {
+    throw new Error(`Server returned invalid response (HTTP ${response.status}).`);
+  }
 
   if (!response.ok) {
-    const error = new Error(data.error || 'Network request failed.');
+    const error = new Error(data.error || 'Request failed.');
     error.status = response.status;
     error.data = data;
     throw error;

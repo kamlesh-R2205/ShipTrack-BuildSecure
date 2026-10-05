@@ -39,7 +39,12 @@ app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps, curl, or server-to-server)
-      if (!origin || allowedOrigins.includes(origin)) {
+      // or from whitelisted origins, or any localhost development port
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
+      ) {
         return callback(null, true);
       }
       callback(new Error('Blocked by CORS security policy.'));
@@ -84,7 +89,7 @@ app.get('/health', (req, res) => {
 // Serve frontend build if dist folder exists
 const fs = require('fs');
 const path = require('path');
-const distPath = path.resolve(__dirname, '../../dist');
+const distPath = path.resolve(__dirname, '../dist');
 
 if (fs.existsSync(distPath)) {
   app.use(express.static(distPath));
