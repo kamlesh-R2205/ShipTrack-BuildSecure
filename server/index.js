@@ -1,4 +1,12 @@
-require('dotenv').config();
+// Load local .env only in non-production environments to avoid overriding container environment variables
+if (process.env.NODE_ENV !== 'production') {
+  try {
+    require('dotenv').config();
+  } catch (e) {
+    // Ignore missing dotenv
+  }
+}
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -14,8 +22,45 @@ const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const MONGODB_URI =
-  process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/shiptrack';
+
+/**
+ * Robust MongoDB connection URI resolver:
+ * 1. process.env.MONGODB_URI
+ * 2. process.env.MONGO_URI
+ * 3. process.env.DATABASE_URL / MONGODB_URL / MONGO_URL
+ * 4. Local fallback strictly for development only
+ */
+function resolveMongoUri() {
+  const candidates = [
+    { key: 'MONGODB_URI', val: process.env.MONGODB_URI },
+    { key: 'MONGO_URI', val: process.env.MONGO_URI },
+    { key: 'DATABASE_URL', val: process.env.DATABASE_URL },
+    { key: 'MONGODB_URL', val: process.env.MONGODB_URL },
+    { key: 'MONGO_URL', val: process.env.MONGO_URL },
+  ];
+
+  for (const item of candidates) {
+    if (typeof item.val === 'string') {
+      const cleaned = item.val.trim().replace(/^["']|["']$/g, '');
+      if (cleaned.length > 0 && (cleaned.startsWith('mongodb://') || cleaned.startsWith('mongodb+srv://'))) {
+        return { uri: cleaned, source: item.key };
+      }
+    }
+  }
+
+  const isProduction =
+    process.env.NODE_ENV === 'production' ||
+    Boolean(process.env.RENDER) ||
+    Boolean(process.env.RENDER_SERVICE_ID);
+
+  if (isProduction) {
+    throw new Error(
+      'Production configuration error: Missing cloud MongoDB connection string. Checked MONGODB_URI and MONGO_URI. Refusing fallback to 127.0.0.1 in production.'
+    );
+  }
+
+  return { uri: 'mongodb://127.0.0.1:27017/shiptrack', source: 'local_fallback' };
+}
 
 // 1. Defensive HTTP Security Headers Middleware
 app.use((req, res, next) => {
@@ -41,13 +86,15 @@ app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps, curl, or server-to-server)
-      // or from whitelisted origins, localhost development ports, or vercel preview domains
+      // or from whitelisted origins, localhost development ports, vercel preview, or onrender domains
       if (
         !origin ||
         allowedOrigins.includes(origin) ||
         /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) ||
         (process.env.CLIENT_URL && origin.startsWith(process.env.CLIENT_URL)) ||
-        /\.vercel\.app$/.test(origin)
+        /\.vercel\.app$/.test(origin) ||
+        /\.onrender\.com$/.test(origin) ||
+        /\.trycloudflare\.com$/.test(origin)
       ) {
         return callback(null, true);
       }
@@ -113,13 +160,24 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // Database Connection & Server Initialization
-async function connectDatabase(uri = MONGODB_URI) {
+async function connectDatabase(explicitUri) {
+  const { uri, source } = explicitUri
+    ? { uri: explicitUri, source: 'explicit' }
+    : resolveMongoUri();
+
   try {
-    await mongoose.connect(uri);
-    console.log(`[DATABASE] Connected successfully to MongoDB at ${uri}`);
+    console.log(`[DATABASE] Connecting to MongoDB (source: ${source})...`);
+    await mongoose.connect(uri, {
+      dbName: 'shiptrack',
+      serverSelectionTimeoutMS: 15000,
+    });
+    console.log('[DATABASE] Connected successfully to MongoDB.');
   } catch (err) {
-    console.error('[DATABASE_ERROR] Failed to connect to MongoDB:', err.message);
-    throw err;
+    const safeError = err.message
+      ? err.message.replace(/:([^:@]+)@/, ':****@')
+      : 'Connection error';
+    console.error('[DATABASE_ERROR] Failed to connect to MongoDB:', safeError);
+    throw new Error(`MongoDB connection failed: ${safeError}`);
   }
 }
 

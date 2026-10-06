@@ -8,11 +8,19 @@ const SecurityPolicy = require('../models/SecurityPolicy');
 const { ROLES, SHIPMENT_STATUS, DEFAULT_POLICIES, INCIDENT_SEVERITY, INCIDENT_STATUS, HONEYPOT_IDS } = require('../config/constants');
 const { generateTrackingNumber } = require('./trackingGenerator');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/shiptrack';
+const rawUri =
+  process.env.MONGODB_URI ||
+  process.env.MONGO_URI ||
+  process.env.DATABASE_URL ||
+  'mongodb://127.0.0.1:27017/shiptrack';
+const MONGODB_URI = typeof rawUri === 'string' ? rawUri.trim().replace(/^["']|["']$/g, '') : rawUri;
 
-async function seedDatabase() {
+async function seedDatabase(explicitUri) {
   try {
-    await mongoose.connect(MONGODB_URI);
+    await mongoose.connect(explicitUri || MONGODB_URI, {
+      dbName: 'shiptrack',
+      serverSelectionTimeoutMS: 15000,
+    });
     console.log('[SEED] Connected to MongoDB.');
 
     // Clear existing data

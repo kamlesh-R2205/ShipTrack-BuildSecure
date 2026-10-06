@@ -3,7 +3,7 @@ services:
     name: shiptrack-guard-backend
     env: node
     plan: free
-    buildCommand: npm install
+    buildCommand: npm install && npm run build
     startCommand: npm start
     healthCheckPath: /health
     envVars:
@@ -19,3 +19,4 @@ services:
         generateValue: true
       - key: CLIENT_URL
         sync: false
+
