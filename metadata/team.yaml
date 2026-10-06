@@ -6,7 +6,7 @@
 team:
   team_id: ""
   name: ""
-  repository: "" # URL of the newly created GitHub repository for this project
+  repository: "https://github.com/kamlesh-R2205/ShipTrack-BuildSecure.git"
 
 members:
   - name: ""

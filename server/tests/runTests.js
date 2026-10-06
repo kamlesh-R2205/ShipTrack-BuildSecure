@@ -372,6 +372,103 @@ async function runAllTests() {
     const hasFsmLog = auditLogsRes.data?.logs?.some((l) => l.eventType === 'INVALID_STATE_TRANSITION');
     logTest('Authentic Security Audit Trail records real BOLA and FSM attacks', auditLogsRes.status === 200 && hasBolaLog && hasFsmLog);
 
+    // ==========================================
+    // SUITE 7: SHIPTRACK GUARD CONTROL PLANE & REALITY ENGINE
+    // ==========================================
+    console.log('\n--- 7. SHIPTRACK GUARD CONTROL PLANE & REALITY ENGINE ---');
+
+    // 7.1 Overview Telemetry Endpoint
+    const overviewRes = await request('/api/guard/overview');
+    logTest(
+      'Security Control Center Overview loads metrics and threat distribution',
+      overviewRes.status === 200 &&
+        overviewRes.data?.data?.metrics?.riskScore != null &&
+        overviewRes.data?.data?.threatDistribution != null
+    );
+
+    // 7.2 Reality Engine: Impossible Movement Evaluation
+    const realityEvalRes = await request('/api/guard/reality-engine/evaluate', {
+      method: 'POST',
+      body: {
+        previousLocation: { lat: 17.385, lng: 78.4867, name: 'Hyderabad Central Hub', timestamp: new Date(Date.now() - 4 * 60000) },
+        currentLocation: { lat: 16.5062, lng: 80.648, name: 'Vijayawada DC', timestamp: new Date() },
+        targetState: 'DELIVERED',
+        expectedDestination: { lat: 16.5062, lng: 80.648, name: 'Vijayawada DC' },
+      },
+    });
+    const hasSpeedAnomaly = realityEvalRes.data?.data?.anomalies?.some((a) => a.code === 'IMPOSSIBLE_MOVEMENT');
+    logTest(
+      'Reality Engine detects impossible movement (275km in 4 mins) & flags anomaly',
+      realityEvalRes.status === 200 && hasSpeedAnomaly && realityEvalRes.data?.data?.isRealistic === false
+    );
+
+    // 7.3 Reality Engine: 5-Factor Location Trust Score
+    const locScore = realityEvalRes.data?.data?.locationTrustScore;
+    const hasBreakdown = realityEvalRes.data?.data?.scoreBreakdown?.gpsAccuracy != null;
+    logTest(
+      'Reality Engine calculates explainable 5-Factor Location Trust Score',
+      typeof locScore === 'number' && hasBreakdown
+    );
+
+    // 7.4 Attack Simulator: Execute BOLA Attack Scenario
+    const attackSimRes = await request('/api/guard/attack-simulator/run', {
+      method: 'POST',
+      body: { scenarioId: 'BOLA_IDOR' },
+    });
+    const hasPipeline = attackSimRes.data?.data?.pipelineSteps?.length === 9;
+    logTest(
+      'Attack Simulator executes BOLA attack through 9-step explainable pipeline',
+      attackSimRes.status === 200 && attackSimRes.data?.data?.decision === 'BLOCK' && hasPipeline
+    );
+
+    // 7.5 Attack Simulator: Honeypot Decoy Trap Trigger
+    const honeypotSimRes = await request('/api/guard/attack-simulator/run', {
+      method: 'POST',
+      body: { scenarioId: 'HONEYPOT_SHIPMENT_ACCESS' },
+    });
+    logTest(
+      'Attack Simulator detects Honeypot Access and creates critical incident',
+      honeypotSimRes.status === 200 &&
+        honeypotSimRes.data?.data?.decision === 'BLOCK' &&
+        honeypotSimRes.data?.data?.riskScore >= 90
+    );
+
+    // 7.6 Flight Recorder: Searchable Audit Black Box
+    const flightRecorderRes = await request('/api/guard/flight-recorder?limit=10');
+    logTest(
+      'Security Flight Recorder returns structured events with decisions and risk',
+      flightRecorderRes.status === 200 && flightRecorderRes.data?.data?.logs?.length > 0
+    );
+
+    // 7.7 Security Policies Engine
+    const policiesRes = await request('/api/guard/policies');
+    logTest(
+      'Policy Engine serves active enforcement rules and categories',
+      policiesRes.status === 200 && policiesRes.data?.data?.length >= 8
+    );
+
+    // 7.8 Security Graph: Entity-Relationship Visualization Data
+    const graphRes = await request('/api/guard/security-graph');
+    logTest(
+      'Security Graph generates multi-entity topology with suspicious link detection',
+      graphRes.status === 200 && graphRes.data?.data?.nodes?.length > 0 && graphRes.data?.data?.links?.length > 0
+    );
+
+    // 7.9 Shipment DNA: Operational Pattern & Route Deviations
+    const dnaShipmentId = step4.data?.shipment?._id;
+    const dnaRes = await request(`/api/guard/shipment-dna/${dnaShipmentId}`);
+    logTest(
+      'Shipment DNA endpoint retrieves expected lifecycle and route checkpoints',
+      dnaRes.status === 200 && dnaRes.data?.data?.dna?.expectedRoute != null
+    );
+
+    // 7.10 Incident Center: Incident retrieval & lifecycle status
+    const incidentsRes = await request('/api/guard/incidents');
+    logTest(
+      'Security Incident Center lists correlated threat cases with attack chains',
+      incidentsRes.status === 200 && incidentsRes.data?.data?.length > 0
+    );
+
     console.log('\n============================================================');
     console.log(`   TEST EXECUTION COMPLETE: ${passedTests} PASSED, ${failedTests} FAILED`);
     console.log('============================================================\n');

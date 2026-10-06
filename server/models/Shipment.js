@@ -33,6 +33,18 @@ const statusHistorySchema = new mongoose.Schema(
       maxlength: 150,
       default: '',
     },
+    latitude: {
+      type: Number,
+      default: null,
+    },
+    longitude: {
+      type: Number,
+      default: null,
+    },
+    locationTrust: {
+      type: Number,
+      default: 100,
+    },
   },
   { _id: true }
 );
@@ -99,13 +111,58 @@ const shipmentSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    // ShipTrack Guard — Shipment DNA & Security Controls
+    isHoneypot: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    securityStatus: {
+      type: String,
+      enum: ['HEALTHY', 'SUSPICIOUS', 'HIGH_RISK', 'CRITICAL'],
+      default: 'HEALTHY',
+    },
+    riskScore: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
+    dna: {
+      expectedRoute: {
+        type: [String],
+        default: ['Hyderabad Central Hub', 'Suryapet Transit Hub', 'Vijayawada DC', 'Destination Address'],
+      },
+      actualRoute: [
+        {
+          checkpoint: { type: String, required: true },
+          timestamp: { type: Date, default: Date.now },
+          location: { type: String, required: true },
+          lat: { type: Number, default: 0 },
+          lng: { type: Number, default: 0 },
+          verified: { type: Boolean, default: true },
+        },
+      ],
+      expectedTransitHours: { type: Number, default: 6 },
+      workflowDeviations: [
+        {
+          type: { type: String, required: true },
+          detectedAt: { type: Date, default: Date.now },
+          expected: { type: String, required: true },
+          actual: { type: String, required: true },
+          severity: { type: String, default: 'HIGH' },
+        },
+      ],
+      locationTrustScore: { type: Number, default: 95 },
+      deviceFingerprints: { type: [String], default: ['DEV-TEL-01'] },
+      accessLogsCount: { type: Number, default: 0 },
+    },
   },
   {
     timestamps: true,
   }
 );
 
-// Mask internal or sensitive info when serialized for JSON
 shipmentSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.__v;

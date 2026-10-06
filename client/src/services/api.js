@@ -1,7 +1,8 @@
 // Determine API Base URL:
 // 1. If VITE_API_URL is provided in environment variables, use it.
 // 2. Otherwise default to relative '/api' (handled by Vite proxy in dev, or same-origin in production).
-const API_BASE = import.meta.env?.VITE_API_URL || '/api';
+const rawBase = import.meta.env?.VITE_API_URL || '/api';
+const API_BASE = rawBase.endsWith('/') ? rawBase.slice(0, -1) : rawBase;
 
 function getAuthHeader() {
   const token = localStorage.getItem('shiptrack_token');
@@ -71,7 +72,7 @@ export const api = {
   getMe: () => request('/auth/me'),
   logout: () => request('/auth/logout', { method: 'POST' }),
 
-  // Shipments
+  // Shipments (Legacy & Core Operations)
   createShipment: (payload) => request('/shipments', { method: 'POST', body: payload }),
   getShipments: (params = {}) => {
     const query = new URLSearchParams(params).toString();
@@ -82,11 +83,9 @@ export const api = {
     request(`/shipments/${id}/status`, { method: 'PATCH', body: payload }),
   trackPublic: (trackingNumber) => request(`/shipments/tracking/${trackingNumber}`),
 
-  // Drivers
+  // Drivers & Admin
   getDriverDashboard: () => request('/drivers/dashboard'),
   getDriverList: () => request('/drivers/list'),
-
-  // Admin
   getAdminDashboard: () => request('/admin/dashboard'),
   assignDriver: (payload) => request('/admin/assign', { method: 'POST', body: payload }),
   getUsers: (params = {}) => {
@@ -98,7 +97,36 @@ export const api = {
     return request(`/admin/audit-logs${query ? `?${query}` : ''}`);
   },
 
-  // Security telemetry
-  getSecurityEvents: () => request('/security/events'),
-  getHealth: () => request('/security/health'),
+  // ==========================================
+  // SHIPTRACK GUARD CONTROL PLANE ENDPOINTS
+  // ==========================================
+  getGuardOverview: () => request('/guard/overview'),
+  getThreatMonitor: () => request('/guard/threat-monitor'),
+  getFlightRecorder: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/guard/flight-recorder${query ? `?${query}` : ''}`);
+  },
+  getRealityEngine: () => request('/guard/reality-engine'),
+  evaluateReality: (payload) =>
+    request('/guard/reality-engine/evaluate', { method: 'POST', body: payload }),
+  getIncidents: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/guard/incidents${query ? `?${query}` : ''}`);
+  },
+  getIncidentById: (id) => request(`/guard/incidents/${id}`),
+  updateIncidentStatus: (id, payload) =>
+    request(`/guard/incidents/${id}/status`, { method: 'PATCH', body: payload }),
+  executeIncidentAction: (id, payload) =>
+    request(`/guard/incidents/${id}/actions`, { method: 'POST', body: payload }),
+  getPolicies: () => request('/guard/policies'),
+  updatePolicyStatus: (id, payload) =>
+    request(`/guard/policies/${id}`, { method: 'PATCH', body: payload }),
+  getSecurityGraph: () => request('/guard/security-graph'),
+  getRiskEngine: () => request('/guard/risk-engine'),
+  getShipmentDNA: (id) => request(`/guard/shipment-dna/${id}`),
+  getAttackScenarios: () => request('/guard/attack-simulator/scenarios'),
+  runAttackSimulation: (scenarioId) =>
+    request('/guard/attack-simulator/run', { method: 'POST', body: { scenarioId } }),
+  globalSearch: (q) => request(`/guard/search?q=${encodeURIComponent(q)}`),
+  getTrustProfiles: () => request('/guard/trust-profiles'),
 };

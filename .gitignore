@@ -1,9 +1,37 @@
+# Dependencies
 node_modules/
-.env
+.pnp
+.pnp.js
+
+# Production build outputs
 dist/
 dist-ssr/
+build/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
 *.local
+
+# Logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Platform & Tool caches
+.vercel
+.render
 .DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

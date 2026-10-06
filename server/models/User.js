@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Password is required'],
       minlength: [8, 'Password must be at least 8 characters'],
-      select: false, // Never return password hash in regular queries
+      select: false,
     },
     role: {
       type: String,
@@ -44,6 +44,42 @@ const userSchema = new mongoose.Schema(
     lockUntil: {
       type: Date,
       default: null,
+    },
+    // ShipTrack Guard Adaptive Trust
+    trustScore: {
+      type: Number,
+      default: 100,
+      min: 0,
+      max: 100,
+    },
+    trustStatus: {
+      type: String,
+      enum: ['NORMAL', 'MONITOR', 'STEP_UP', 'RESTRICTED', 'BLOCKED'],
+      default: 'NORMAL',
+    },
+    trustHistory: [
+      {
+        timestamp: { type: Date, default: Date.now },
+        delta: { type: Number, required: true },
+        newScore: { type: Number, required: true },
+        reason: { type: String, required: true },
+        eventId: { type: String, default: null },
+      },
+    ],
+    assignedHub: {
+      type: String,
+      default: 'HYD-CENTRAL-01',
+    },
+    lastKnownLocation: {
+      lat: { type: Number, default: 17.385 },
+      lng: { type: Number, default: 78.4867 },
+      name: { type: String, default: 'Hyderabad Central Hub' },
+      timestamp: { type: Date, default: Date.now },
+      deviceId: { type: String, default: 'DEV-TEL-01' },
+    },
+    isHoneypotTriggered: {
+      type: Boolean,
+      default: false,
     },
   },
   {

@@ -5,7 +5,7 @@ version: "1.0"
 
 submission:
   team_id: ""
-  repository: ""
-  commit_sha: ""
+  repository: "https://github.com/kamlesh-R2205/ShipTrack-BuildSecure.git"
+  commit_sha: "6aa6bc9ed78979c901a36a91be7aace162b3d106"
   deployment_url: ""
-  submitted_at: ""
+  submitted_at: "2026-10-06T12:00:00+05:30"

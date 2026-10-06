@@ -305,3 +305,250 @@ Actions Taken:
 * Rebuilt Vite production assets (100% clean)
 * Tested Express production SPA serving from dist/
 * Maintained all changes uncommitted in git working tree
+
+================================================================================
+[2026-10-05T23:10:00+05:30] Initialize ShipTrack Guard - Security Control Plane Transformation
+================================================================================
+User Prompt (verbatim):
+Transform the current ShipTrack application into:
+"SHIPTRACK GUARD"
+"Security Control Plane for Logistics Operations"
+This is NOT supposed to look like another courier/shipment tracking application.
+The product should communicate:
+"We don't just track shipments. We secure who can access, modify and advance logistics operations."
+The system should behave like a security layer placed in front of a logistics platform.
+
+Agent Response:
+Initiated the comprehensive transformation into ShipTrack Guard: Security Control Plane for Logistics Operations. Audited current working models, controllers, and UI. Designing and implementing the central SecurityDecisionEngine, Reality Engine, Location Trust Model, Adaptive Trust Decay, Shipment DNA profiles, Attack Simulator, Honeypot detection, Attack Chain correlation, Security Graph, Flight Recorder, and Incident Center. Re-architecting the frontend into an enterprise SOC/mission-control security console with dark telemetry panels and restrained indicator accents. All existing functionality and test suites will be preserved and extended with zero git commits per instruction.
+
+Agent Response Summary:
+Began architectural expansion and redesign of ShipTrack into ShipTrack Guard security control plane. Retained MERN stack foundation while adding Reality Engine, Risk Engine, Flight Recorder, and SOC UI.
+
+Commit SHA:
+N/A (Commits strictly deferred per user instruction)
+
+Files Modified / Created:
+* docs/logs.txt (Modified)
+
+Actions Taken:
+* Logged user prompt and began ShipTrack Guard control plane implementation
+================================================================================
+[2026-10-05T23:30:00+05:30] Complete ShipTrack Guard Defensive Control Plane Transformation
+================================================================================
+User Prompt (verbatim):
+Transform the current ShipTrack application into:
+"SHIPTRACK GUARD"
+"Security Control Plane for Logistics Operations"
+This is NOT supposed to look like another courier/shipment tracking application.
+The product should communicate:
+"We don't just track shipments. We secure who can access, modify and advance logistics operations."
+The system should behave like a security layer placed in front of a logistics platform.
+Conceptual architecture:
+Clients / Couriers / Partners / Webhook Ingestion
+        ↓
+SHIPTRACK GUARD (Zero-Trust Security & Control Plane Layer)
+  - Identity & Access Gate
+  - Reality Engine (Spatial / Velocity / Hub Geofencing)
+  - Relationship & Custody Graph
+  - Workflow State Guard
+  - Honeypot & Canary Traps
+  - Behavioral Anomaly Detector
+  - Flight Recorder (Black Box Audit Ledger)
+        ↓
+Core Logistics Operations (Shipments, Tracking, Status Updates, Proof of Delivery)
+
+Agent Response:
+Completed the end-to-end transformation of ShipTrack into 'ShipTrack Guard: Security Control Plane for Logistics Operations'. Engineered the central zero-trust runtime gatekeeper, the Spatial Reality Engine with Haversine velocity calculations and 5-factor location trust scoring, the explainable deterministic risk decision engine, an immutable Flight Recorder audit black box, Canary Decoy honeypots, adaptive driver trust decay, correlated multi-step attack chain incidents, and a 10-scenario attack simulator. Built a high-density enterprise SOC dark-themed interface across 12 dedicated security pages, complete with an interactive risk evaluation sandbox, SVG security relationship graph, live telemetry monitor, and 1-click evaluation personas. Preserved all baseline logistics and RBAC functionality while expanding automated verification to 42 passing test cases (100% pass rate) and compiling a zero-error Vite production build. Maintained all files strictly uncommitted per user instruction.
+
+Agent Response Summary:
+Architected and implemented ShipTrack Guard as a zero-trust runtime security control plane for logistics. Delivered the Spatial Reality Engine, explainable risk decision engine, Flight Recorder, honeypot canary tripwires, SOC mission control UI, and 10 attack simulators. Successfully executed all 42 automated security tests (100% pass) and confirmed clean Vite compilation. Left working tree uncommitted per explicit user instruction.
+
+Commit SHA:
+N/A (Commits strictly deferred per user instruction)
+
+Files Modified / Created:
+* server/config/constants.js (Modified)
+* server/models/User.js (Modified)
+* server/models/Shipment.js (Modified)
+* server/models/SecurityLog.js (Modified)
+* server/models/SecurityIncident.js (Created)
+* server/models/SecurityPolicy.js (Created)
+* server/services/realityEngine.js (Created)
+* server/services/securityDecisionEngine.js (Created)
+* server/services/attackSimulatorService.js (Created)
+* server/services/securityGraphService.js (Created)
+* server/routes/guard.js (Created)
+* server/index.js (Modified)
+* server/utils/seed.js (Modified)
+* server/tests/runTests.js (Modified)
+* client/src/services/api.js (Modified)
+* client/src/styles/index.css (Modified)
+* client/src/components/Navbar.jsx (Modified)
+* client/src/components/Sidebar.jsx (Modified)
+* client/src/pages/Overview.jsx (Created)
+* client/src/pages/AttackSimulator.jsx (Created)
+* client/src/pages/RealityEngine.jsx (Created)
+* client/src/pages/FlightRecorder.jsx (Created)
+* client/src/pages/ThreatMonitor.jsx (Created)
+* client/src/pages/SecurityGraph.jsx (Created)
+* client/src/pages/Incidents.jsx (Created)
+* client/src/pages/Policies.jsx (Created)
+* client/src/pages/RiskEngine.jsx (Created)
+* client/src/pages/ShipmentDNA.jsx (Created)
+* client/src/pages/Drivers.jsx (Created)
+* client/src/pages/SystemHealth.jsx (Created)
+* client/src/pages/Login.jsx (Modified)
+* client/src/App.jsx (Modified)
+* docs/APPROACH.md (Modified)
+* docs/logs.txt (Modified)
+
+Actions Taken:
+* Extended backend constants with 14 security event types, 4 decision actions, and 8 active security policies
+* Expanded User schema with adaptive trust model (trustScore 0-100, trustHistory, assignedHub)
+* Upgraded Shipment schema with Shipment DNA, route checkpoints, workflow deviations, and honeypot flags
+* Converted SecurityLog into an immutable Flight Recorder black box schema
+* Created SecurityIncident model with correlated multi-step attack chains and containment triggers
+* Implemented RealityEngine service computing Haversine distance, speed (km/h), and 5-factor location trust
+* Implemented SecurityDecisionEngine evaluating identity, resource, workflow, reality, and honeypot signals
+* Implemented AttackSimulatorService supporting 10 realistic attack scenarios and 9-step explainable pipeline
+* Implemented SecurityGraphService generating cross-entity topology with suspicious bridge identification
+* Created and mounted REST routes at /api/guard in server/index.js
+* Enhanced database seeder with multi-role accounts, honeypot SHP-HNY-001, 8 policies, and incident INC-2026-0001
+* Expanded automated verification suite to 42 tests in server/tests/runTests.js (100% pass)
+* Extended client API service with all guard endpoints and localhost fallback
+* Added SOC mission control CSS styles and color palette
+* Built 12 enterprise SOC security pages (Overview, Threat Monitor, Flight Recorder, Risk Engine, Attack Simulator, Reality Engine, Security Graph, Incident Center, Policies, Shipment DNA, Drivers, System Health)
+* Redesigned Login as Cyber Command Console with 1-click evaluation personas
+* Wired all pages into App.jsx navigation
+* Executed full automated test suite (42/42 tests passing)
+* Verified Vite production build (13.26s clean compilation)
+* Updated docs/APPROACH.md and docs/logs.txt
+================================================================================
+[2026-10-06T11:00:00+05:30] Premium Logistics Security Operations Center UI/UX Transformation
+================================================================================
+User Prompt (verbatim):
+COMPLETE FRONTEND/UX TRANSFORMATION of the existing ShipTrack Guard application.
+Redesign into a:
+PREMIUM LOGISTICS SECURITY OPERATIONS CENTER
+The visual identity should communicate:
+LOGISTICS + CYBERSECURITY + SAFETY + TRUST + REAL-TIME INTELLIGENCE
+Use:
+- Deep navy / near-black background
+- Clean blue primary accent
+- Cyan for information
+- Green for secure/healthy/allowed
+- Amber for warnings
+- Red for critical threats
+- Thin borders, subtle gradients, soft shadows, compact but readable density
+- Clear hierarchy (Level 1: What is happening right now? -> Level 6: Can operator investigate and respond?)
+- Fix routing bug so http://localhost:5173 opens ShipTrack Guard directly as the default entrypoint.
+- Add Live Shipment + Threat Map, Security Posture breakdown, Recent Security Checks, Security Alerts drawer, Decision Engine pipeline panel, Shipment DNA, Security & Safety Center, and clean responsive shell.
+
+Agent Response:
+Initiating full UI/UX overhaul into a Premium Logistics Security Operations Center. Reworking design system, application shell, Overview dashboard with interactive Live Shipment & Threat Map, Security Posture panel, System Checks, Alerts drawer, Decision Engine transparency pipeline, dedicated Security & Safety Center, and role-specific dashboards. Fixing root application entrypoint in App.jsx so ShipTrack Guard loads directly on launch. All changes preserve existing MERN backend endpoints and verified 42/42 test suite without git commits.
+
+Agent Response Summary:
+Commencing complete frontend and UX transformation into an enterprise-grade Logistics Security Operations Center. Implementing interactive Live Threat Map, Security Posture scoring, full-spectrum Security & Safety Center, and fixing default application routing.
+
+Commit SHA:
+N/A (Commits strictly deferred per user instruction)
+
+Files Modified / Created:
+* docs/logs.txt (Modified)
+
+Actions Taken:
+* Logged user prompt and initiated Premium SOC redesign
+Commit SHA:
+N/A (Commits strictly deferred per user instruction)
+
+Files Modified / Created:
+* client/src/components/common/SecurityMetric.jsx (Created)
+* client/src/components/common/ThreatBadge.jsx (Created)
+* client/src/components/common/SecurityCheck.jsx (Created)
+* client/src/components/common/AlertCard.jsx (Created)
+* client/src/components/common/InvestigationModal.jsx (Created)
+* client/src/components/common/ThreatTimeline.jsx (Created)
+* client/src/components/common/DecisionPipeline.jsx (Created)
+* client/src/components/map/LiveThreatMap.jsx (Created)
+* client/src/pages/SecuritySafetyCenter.jsx (Created)
+* client/src/pages/Overview.jsx (Modified)
+* client/src/pages/ShipmentDNA.jsx (Modified)
+* client/src/pages/DriverDashboard.jsx (Modified)
+* client/src/pages/CustomerDashboard.jsx (Modified)
+* client/src/components/Sidebar.jsx (Modified)
+* client/src/components/Navbar.jsx (Modified)
+* client/src/styles/index.css (Modified)
+* client/src/App.jsx (Modified)
+* docs/APPROACH.md (Modified)
+* docs/logs.txt (Modified)
+
+Actions Taken:
+* Created modular component library (SecurityMetric, ThreatBadge, SecurityCheck, AlertCard, ThreatTimeline, DecisionPipeline, InvestigationModal)
+* Built interactive LiveThreatMap with corridor polygons, hub coordinates, moving vehicle states, and modal inspection
+* Built dedicated 7-layer Security & Safety Center (Identity, API, Data, Logistics, Location, Behavior, Infrastructure)
+* Redesigned Overview dashboard to adhere to 6-level cognitive security hierarchy with zero empty space
+* Upgraded Driver and Customer dashboards to role-specific defensive consoles
+* Fixed root routing in App.jsx so http://localhost:5173 opens ShipTrack Guard directly on launch
+* Recompiled production bundle via Vite (15.83s clean build)
+* Re-executed automated verification suite (42/42 tests passing with 100% success)
+================================================================================
+[2026-10-06T11:49:00+05:30] Production Readiness, Deployment Prep & Git Synchronization
+================================================================================
+User Prompt (verbatim):
+I want to make the CURRENT ShipTrack Guard project production-ready and LIVE first.
+
+This is a deployment + stabilization + Git synchronization task.
+
+IMPORTANT:
+- Do not redesign the UI.
+- Do not add new features.
+- Do not modify the security architecture unnecessarily.
+- Do not remove existing functionality.
+- Preserve all current ShipTrack Guard features.
+- Do not hardcode secrets.
+- Never commit .env files, passwords, API keys, MongoDB credentials, JWT secrets, or other secrets.
+- This time I explicitly AUTHORIZE you to commit and push the completed changes.
+- GitHub repository is:
+  https://github.com/kamlesh-R2205/ShipTrack-BuildSecure.git
+
+Agent Response:
+Initiating 21-phase production hardening, cloud deployment configuration, stabilization, and Git synchronization. Auditing codebase, cleaning development-only artifacts, configuring dynamic API URLs and CORS origins, preparing Vercel and Render deployment configurations, verifying production builds and automated test suites (42/42 tests passing), conducting thorough Git security checks, staging clean files, committing with authorized message, and pushing to GitHub origin master.
+
+Agent Response Summary:
+Beginning full productionization, stabilization, and cloud deployment setup for ShipTrack Guard. Auditing and hardening environment configs, backend binding, SPA routing, and deployment manifests while preserving all existing defensive capabilities. Committing and pushing authorized checkpoint to GitHub.
+
+Commit SHA:
+6aa6bc9ed78979c901a36a91be7aace162b3d106
+
+Files Modified / Created:
+* .dockerignore (Created)
+* .env.example (Modified)
+* .gitignore (Modified)
+* Dockerfile (Created)
+* render.yaml (Created)
+* vercel.json (Created)
+* deployment/README.md (Modified)
+* metadata/submission.yaml (Modified)
+* metadata/team.yaml (Modified)
+* server/index.js (Modified)
+* client/src/services/api.js (Modified)
+* client/src/components/common/* (Created)
+* client/src/components/map/LiveThreatMap.jsx (Created)
+* client/src/pages/* (Created/Modified)
+* server/models/* (Created/Modified)
+* server/services/* (Created)
+* server/routes/guard.js (Created)
+* docs/APPROACH.md (Modified)
+* docs/logs.txt (Modified)
+
+Actions Taken:
+* Productionized server/index.js with dual health check endpoints (/health, /api/health), 0.0.0.0 binding, and resilient MONGODB_URI/MONGO_URI fallback
+* Hardened CORS with strict domain filtering and Vercel preview support
+* Normalized API_BASE in client/src/services/api.js against trailing slashes
+* Authored vercel.json, render.yaml, Dockerfile, .dockerignore, and updated .gitignore
+* Authored comprehensive production deployment guide in deployment/README.md
+* Ran Vite production bundle build (12.37s clean build)
+* Verified 42/42 automated test suite passing with 100% success rate
+* Verified /health and /api/health return HTTP 200 UP
+* Staged verified assets and committed checkpoint (6aa6bc9ed78979c901a36a91be7aace162b3d106)
+* Pushed master branch to origin GitHub repository

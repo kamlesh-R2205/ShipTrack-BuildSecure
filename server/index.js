@@ -9,11 +9,13 @@ const shipmentRoutes = require('./routes/shipments');
 const driverRoutes = require('./routes/drivers');
 const adminRoutes = require('./routes/admin');
 const securityRoutes = require('./routes/security');
+const guardRoutes = require('./routes/guard');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/shiptrack';
+const MONGODB_URI =
+  process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/shiptrack';
 
 // 1. Defensive HTTP Security Headers Middleware
 app.use((req, res, next) => {
@@ -39,11 +41,13 @@ app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps, curl, or server-to-server)
-      // or from whitelisted origins, or any localhost development port
+      // or from whitelisted origins, localhost development ports, or vercel preview domains
       if (
         !origin ||
         allowedOrigins.includes(origin) ||
-        /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
+        /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) ||
+        (process.env.CLIENT_URL && origin.startsWith(process.env.CLIENT_URL)) ||
+        /\.vercel\.app$/.test(origin)
       ) {
         return callback(null, true);
       }
@@ -76,15 +80,20 @@ app.use('/api/shipments', shipmentRoutes);
 app.use('/api/drivers', driverRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/security', securityRoutes);
+app.use('/api/guard', guardRoutes);
 
-// Health check endpoint
-app.get('/health', (req, res) => {
+// Health check endpoints (both root and /api for load balancers and reverse proxies)
+const healthHandler = (req, res) => {
   res.status(200).json({
     status: 'UP',
+    service: 'ShipTrack Guard Control Plane',
     database: mongoose.connection.readyState === 1 ? 'CONNECTED' : 'DISCONNECTED',
+    uptime: Math.floor(process.uptime()),
     timestamp: new Date().toISOString(),
   });
-});
+};
+app.get('/health', healthHandler);
+app.get('/api/health', healthHandler);
 
 // Serve frontend build if dist folder exists
 const fs = require('fs');
@@ -117,8 +126,8 @@ async function connectDatabase(uri = MONGODB_URI) {
 if (require.main === module) {
   connectDatabase()
     .then(() => {
-      app.listen(PORT, () => {
-        console.log(`[SHIPTRACK] Server listening on http://localhost:${PORT}`);
+      app.listen(PORT, '0.0.0.0', () => {
+        console.log(`[SHIPTRACK] Server listening on http://0.0.0.0:${PORT} (port ${PORT})`);
         console.log(`[SECURITY] Defense-in-depth middleware active.`);
       });
     })
